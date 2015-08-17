@@ -37,7 +37,7 @@ def generate_random_number(digits):
 	passed to the function. Returns the random positive integer.
 	'''
 	number = random.randint(0, (10**digits)-1)	
-	return number	
+	return number
 
 def user_guesses(digits):
 	'''Function promprts user to guess a positive integer, 
@@ -63,24 +63,12 @@ def user_guesses(digits):
 			continue
 		else:
 			try:
-				guess = int(guess)
+				int(guess)
 			except:
 				print "You can't get lucky if you're not listening."
 				continue
 			else:
 				return guess
-
-#Is it better to out this calculation as a function, 
-#at the end of user_guesses() function, 
-#or directly in test_guess()?
-#Or does it not really matter? 
-def create_guess_dict(digits):
-	'''Function to convert user guess into a dictionary to 
-	easily determine cows and bulls. 
-	'''
-	guess = str(user_guesses(digits))
-	guess_dict = {i:guess[i] for i in range(len(guess))}	#I wanted to user enumerate here but couldn't figure out how.
-	return guess_dict
 
 
 def test_guess():
@@ -102,19 +90,27 @@ def test_guess():
 
 	print 'Welcome to the mimsmind game. You have {0} tries to guess the random number.'.format(maxguesses)
 
-	guess_dict = create_guess_dict(digits)
+	guess = user_guesses(digits)
+	guess_str = str(guess)					
+	guess_dict = {i:guess_str[i] for i, value in enumerate(guess_str)}	#I wanted to user enumerate here but couldn't figure out how.
+
 	guess_count = 1
 
 	while guess != number and guess_count < maxguesses:
 		bulls = 0
 		cows = 0
+		number_used_list = [d for d in number]
 		for digit in guess_dict:
-			if guess_dict[digit] == number[digit]:
+			if guess_dict[digit] == number_used_list[digit]:
 				bulls += 1
-			elif guess_dict[digit] in number:
+				number_used_list[digit] = 'used'
+		for digit in guess_dict:
+			if guess_dict[digit] in number_used_list:
 				cows += 1
-		print "{0} bulls(s), {1} cow(s).".format(bulls, cows)
-		guess_dict = create_guess_dict(digits)
+		print "{0} bull(s), {1} cow(s).".format(bulls, cows)
+		guess = user_guesses(digits)
+		guess_str = str(guess)								
+		guess_dict = {i:guess_str[i] for i , value in enumerate(guess_str)}	#I wanted to user enumerate here but couldn't figure out how.
 		guess_count += 1
 
 	if guess == number:
